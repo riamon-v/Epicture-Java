@@ -2,9 +2,6 @@ package com.example.riamon_v.java_epicture_2017.DatabaseManagment;
 
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
-import android.arch.persistence.room.TypeConverters;
-
-import java.util.Date;
 
 /**
  * User object in database
@@ -15,11 +12,19 @@ public class User {
         @PrimaryKey (autoGenerate = true)
         private int id;
 
+        private String name;
         private String login;
         private String password;
-        private String tokenFlickr;
-        private String tokenImgur;
+        private String tokenFlickr = null;
+        private String tokenImgur = null;
         private boolean connect = false;
+
+        public User(String name, String login, String password) {
+                this.name = name;
+                this.login = login;
+                this.password = password;
+
+        }
 
         public int getId() {
                 return id;
@@ -67,5 +72,13 @@ public class User {
 
         public void setConnect(boolean connect) {
                 this.connect = connect;
+        }
+
+        public String getName() {
+                return name;
+        }
+
+        public void setName(String name) {
+                this.name = name;
         }
 }

@@ -28,6 +28,14 @@ public interface UsersDAO {
     @Query("SELECT * FROM users WHERE login = :login")
     User getUserByLogin(String login);
 
+    @Query("SELECT * FROM users WHERE connect = :connect")
+    User getConnectedUser(boolean connect);
+
+    @Query("SELECT * FROM users WHERE tokenFlickr IS NOT NULL LIMIT 1")
+    User getConnectedUserFlick();
+
+    @Query("SELECT * FROM users WHERE tokenImgur IS NOT NULL LIMIT 1")
+    User getConnectedUserImgur();
     /*@Query("SELECT * FROM User WHERE id = :id")
     User getTaskById(int id);*/
 }
