@@ -1,7 +1,7 @@
 package com.example.riamon_v.java_epicture_2017;
 
+import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
@@ -16,7 +16,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
-import android.widget.TextView;
+import com.example.riamon_v.java_epicture_2017.AddActuality.AddActivity;
+import com.example.riamon_v.java_epicture_2017.DatabaseManagment.DatabaseHandler;
+import com.example.riamon_v.java_epicture_2017.DatabaseManagment.User;
+import com.example.riamon_v.java_epicture_2017.SignLoginHandling.LoginActivity;
+
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -28,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
      * may be best to switch to a
      * {@link android.support.v4.app.FragmentStatePagerAdapter}.
      */
+    private static final String ARG_SECTION_NUMBER = "section_number";
     private SectionsPagerAdapter mSectionsPagerAdapter;
 
     /**
@@ -50,17 +56,12 @@ public class MainActivity extends AppCompatActivity {
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -80,6 +81,19 @@ public class MainActivity extends AppCompatActivity {
         if (id == R.id.action_settings) {
             return true;
         }
+        else if (id == R.id.action_disconnect) {
+            List<User> users = DatabaseHandler.getInstance(this).getUserDao().getUsers();
+
+            for (Object user : users) {
+                ((User) user).setConnect(false);
+                ((User) user).setTokenFlickr(null);
+                ((User) user).setTokenImgur(null);
+                DatabaseHandler.getInstance(this).getUserDao().updateUser((User)user);
+            }
+            Intent discoIntent = new Intent(this, LoginActivity.class);
+            startActivity(discoIntent);
+            MainActivity.this.finish();
+        }
 
         return super.onOptionsItemSelected(item);
     }
@@ -92,7 +106,7 @@ public class MainActivity extends AppCompatActivity {
          * The fragment argument representing the section number for this
          * fragment.
          */
-        private static final String ARG_SECTION_NUMBER = "section_number";
+       // private static final String ARG_SECTION_NUMBER = "section_number";
 
         public PlaceholderFragment() {
         }
@@ -113,10 +127,30 @@ public class MainActivity extends AppCompatActivity {
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-            TextView textView = (TextView) rootView.findViewById(R.id.section_label);
-            textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));
+         //   TextView textView = (TextView) rootView.findViewById(R.id.section_label);
+           // textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));
+
+            FloatingActionButton fab = (FloatingActionButton) rootView.findViewById(R.id.fab);
+            fab.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                    add(getString(getArguments().getInt(ARG_SECTION_NUMBER) == 1 ? R.string.title_imgur : R.string.title_flickr));
+                    /*Snackbar.make(view, getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)), Snackbar.LENGTH_LONG)
+                            .setAction("Action", null).show();*/
+                }
+            });
             return rootView;
         }
+
+
+        public void add(String title) {
+            Intent intent = new Intent(getActivity(), AddActivity.class);
+            intent.putExtra("title", title);
+
+            startActivity(intent);
+        }
+
     }
 
     /**
@@ -138,8 +172,8 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public int getCount() {
-            // Show 3 total pages.
-            return 3;
+            // Show 2 total pages.
+            return 2;
         }
     }
 }
