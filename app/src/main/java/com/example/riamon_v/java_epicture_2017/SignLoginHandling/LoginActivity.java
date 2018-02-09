@@ -27,19 +27,6 @@ public class LoginActivity extends AppCompatActivity {// implements LoaderCallba
      */
     private static final int REQUEST_SIGNUP = 0;
 
-    /**
-     * A dummy authentication store containing known user names and passwords.
-     * TODO: remove after connecting to a real authentication system.
-     */
-    private static final String[] DUMMY_CREDENTIALS = new String[]{
-            "foo@example.com:hello", "bar@example.com:world"
-    };
-    /**
-     * Keep track of the login task to ensure we can cancel it if requested.
-     */
-    //private UserLoginTask mAuthTask = null;
-
-    // UI references.
     private EditText mUserName;
     private EditText mPasswordView;
     private Button loginButton;
@@ -75,10 +62,7 @@ public class LoginActivity extends AppCompatActivity {// implements LoaderCallba
                 startActivityForResult(intent, REQUEST_SIGNUP);
             }
         });
-
-       // mLoginFormView = findViewById(R.id.login_form);
-        //mProgressView = findViewById(R.id.login_progress);
-    }
+     }
 
     private User isAlreadyConnected() {
         User user;
@@ -96,30 +80,19 @@ public class LoginActivity extends AppCompatActivity {// implements LoaderCallba
     }
 
     private void login() {
-        Log.d("LoginActivity", "Login");
-
         if (!validate()) {
             onLoginFailed();
             return;
         }
 
         loginButton.setEnabled(false);
-
         final ProgressDialog progressDialog = new ProgressDialog(LoginActivity.this,
                 R.style.AppTheme_Dark_Dialog);
         progressDialog.setIndeterminate(true);
         progressDialog.setMessage("Authenticating...");
         progressDialog.show();
 
-       // String email = _emailText.getText().toString();
-        //String password = _passwordText.getText().toString();
-
         // TODO: Implement your own authentication logic here.
-
-
-        //Intent mainIntent = new Intent(LoginActivity.this, MainActivity.class);
-
-      //  startActivityForResult(mainIntent, REQUEST_LOGIN);
         new android.os.Handler().postDelayed(
                 new Runnable() {
                     public void run() {
@@ -135,9 +108,6 @@ public class LoginActivity extends AppCompatActivity {// implements LoaderCallba
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_SIGNUP) {
             if (resultCode == RESULT_OK) {
-
-                // TODO: Implement successful signup logic here
-                // By default we just finish the Activity and log them in automatically
                 onLoginSuccess();
             }
         }
@@ -158,7 +128,6 @@ public class LoginActivity extends AppCompatActivity {// implements LoaderCallba
 
     private void onLoginFailed() {
         Toast.makeText(getBaseContext(), "Login failed", Toast.LENGTH_LONG).show();
-
         loginButton.setEnabled(true);
     }
 

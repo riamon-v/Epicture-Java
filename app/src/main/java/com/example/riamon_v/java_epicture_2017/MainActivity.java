@@ -3,6 +3,10 @@ package com.example.riamon_v.java_epicture_2017;
 import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 
 import android.support.v4.app.Fragment;
@@ -19,8 +23,11 @@ import android.view.ViewGroup;
 import com.example.riamon_v.java_epicture_2017.AddActuality.AddActivity;
 import com.example.riamon_v.java_epicture_2017.DatabaseManagment.DatabaseHandler;
 import com.example.riamon_v.java_epicture_2017.DatabaseManagment.User;
+import com.example.riamon_v.java_epicture_2017.ListManagment.AdapterCard;
+import com.example.riamon_v.java_epicture_2017.ListManagment.CardClass;
 import com.example.riamon_v.java_epicture_2017.SignLoginHandling.LoginActivity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -102,6 +109,10 @@ public class MainActivity extends AppCompatActivity {
      * A placeholder fragment containing a simple view.
      */
     public static class PlaceholderFragment extends Fragment {
+
+        private RecyclerView recyclerView;
+        private AdapterCard adapter;
+
         /**
          * The fragment argument representing the section number for this
          * fragment.
@@ -126,9 +137,25 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
+
+            List<CardClass> fakeImgur = new ArrayList<>();
+            List<CardClass> fakeFlickr = new ArrayList<>();
+
+            for (int i = 0; i < 10; i++) {
+                fakeImgur.add(new CardClass("Et paf le chien", R.drawable.dog));
+                fakeFlickr.add(new CardClass("Le chat est moche", R.drawable.cat));
+            }
+
             View rootView = inflater.inflate(R.layout.fragment_main, container, false);
+            recyclerView = rootView.findViewById(R.id.recyclerView);
+            recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+            recyclerView.setItemAnimator(new DefaultItemAnimator());
+            recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL));
          //   TextView textView = (TextView) rootView.findViewById(R.id.section_label);
            // textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));
+
+            adapter = new AdapterCard((getArguments().getInt(ARG_SECTION_NUMBER) == 1 ? fakeImgur : fakeFlickr), null);
+            recyclerView.setAdapter(adapter);
 
             FloatingActionButton fab = (FloatingActionButton) rootView.findViewById(R.id.fab);
             fab.setOnClickListener(new View.OnClickListener() {
@@ -136,8 +163,6 @@ public class MainActivity extends AppCompatActivity {
                 public void onClick(View view) {
 
                     add(getString(getArguments().getInt(ARG_SECTION_NUMBER) == 1 ? R.string.title_imgur : R.string.title_flickr));
-                    /*Snackbar.make(view, getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)), Snackbar.LENGTH_LONG)
-                            .setAction("Action", null).show();*/
                 }
             });
             return rootView;
