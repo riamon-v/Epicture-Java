@@ -14,6 +14,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -42,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
      */
     private static final String ARG_SECTION_NUMBER = "section_number";
     private SectionsPagerAdapter mSectionsPagerAdapter;
+    private FloatingActionButton addButton;
 
     /**
      * The {@link ViewPager} that will host the section contents.
@@ -62,7 +64,13 @@ public class MainActivity extends AppCompatActivity {
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
-
+        addButton = findViewById(R.id.add);
+        addButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mSectionsPagerAdapter.fragment.add(getString(mViewPager.getCurrentItem() == 0 ? R.string.title_imgur : R.string.title_flickr));
+            }
+        });
     }
 
     @Override
@@ -157,17 +165,16 @@ public class MainActivity extends AppCompatActivity {
             adapter = new AdapterCard((getArguments().getInt(ARG_SECTION_NUMBER) == 1 ? fakeImgur : fakeFlickr), null);
             recyclerView.setAdapter(adapter);
 
-            FloatingActionButton fab = (FloatingActionButton) rootView.findViewById(R.id.fab);
+          /*  FloatingActionButton fab = (FloatingActionButton) rootView.findViewById(R.id.fab);
             fab.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
 
                     add(getString(getArguments().getInt(ARG_SECTION_NUMBER) == 1 ? R.string.title_imgur : R.string.title_flickr));
                 }
-            });
+            });*/
             return rootView;
         }
-
 
         public void add(String title) {
             Intent intent = new Intent(getActivity(), AddActivity.class);
@@ -184,7 +191,10 @@ public class MainActivity extends AppCompatActivity {
      */
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
+        public PlaceholderFragment fragment;
+
         public SectionsPagerAdapter(FragmentManager fm) {
+
             super(fm);
         }
 
@@ -192,7 +202,8 @@ public class MainActivity extends AppCompatActivity {
         public Fragment getItem(int position) {
             // getItem is called to instantiate the fragment for the given page.
             // Return a PlaceholderFragment (defined as a static inner class below).
-            return PlaceholderFragment.newInstance(position + 1);
+            fragment = PlaceholderFragment.newInstance(position + 1);
+            return fragment;
         }
 
         @Override

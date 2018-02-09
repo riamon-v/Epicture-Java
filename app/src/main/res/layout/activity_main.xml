@@ -8,7 +8,8 @@
     android:fitsSystemWindows="true"
     tools:context="com.example.riamon_v.java_epicture_2017.MainActivity">
 
-    <android.support.design.widget.AppBarLayout
+
+   <android.support.design.widget.AppBarLayout
         android:id="@+id/appbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -34,5 +35,15 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/add"
+        android:layout_width="52dp"
+        android:layout_height="52dp"
+        android:layout_gravity="bottom|right"
+        android:layout_margin="16dp"
+        app:layout_anchorGravity="bottom|right|end"
+        app:srcCompat="@drawable/ic_add_white_24dp" />
+
 
 </android.support.design.widget.CoordinatorLayout>
