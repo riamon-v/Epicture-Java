@@ -6,6 +6,8 @@
     <string name="title_flickr">FLICKR</string>
     <string name="title_imgur">IMGUR</string>
     <string name="title_activity_login">Sign in</string>
+    <string name="title_activity_signup">Sign Up</string>
+    <string name="title_activity_imgur">Sign with Imgur</string>
 
     <!-- Strings related to login -->
     <string name="prompt_userName">UserName</string>
@@ -19,8 +21,10 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
-    <string name="title_activity_signup">Sign Up</string>
 
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
+
+    <string name="api_imgur">https://api.imgur.com/</string>
+    <string name="CLIENT_ID_IMGUR">fd2f0bb75051567</string>
 </resources>

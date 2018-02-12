@@ -28,8 +28,18 @@ import com.example.riamon_v.java_epicture_2017.ListManagment.AdapterCard;
 import com.example.riamon_v.java_epicture_2017.ListManagment.CardClass;
 import com.example.riamon_v.java_epicture_2017.SignLoginHandling.LoginActivity;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -73,6 +83,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+
     @Override
     public void onResume() {
         super.onResume();
@@ -97,22 +108,25 @@ public class MainActivity extends AppCompatActivity {
             return true;
         }
         else if (id == R.id.action_disconnect) {
-            List<User> users = DatabaseHandler.getInstance(this).getUserDao().getUsers();
-
-            for (Object user : users) {
-                ((User) user).setConnect(false);
-                ((User) user).setTokenFlickr(null);
-                ((User) user).setTokenImgur(null);
-                DatabaseHandler.getInstance(this).getUserDao().updateUser((User)user);
-            }
-            Intent discoIntent = new Intent(this, LoginActivity.class);
-            startActivity(discoIntent);
-            MainActivity.this.finish();
+            disconnect();
         }
 
         return super.onOptionsItemSelected(item);
     }
 
+    private void disconnect() {
+        List<User> users = DatabaseHandler.getInstance(this).getUserDao().getUsers();
+
+        for (Object user : users) {
+            ((User) user).setConnect(false);
+            ((User) user).setTokenFlickr(null);
+            ((User) user).setTokenImgur(null);
+            DatabaseHandler.getInstance(this).getUserDao().updateUser((User)user);
+        }
+        Intent discoIntent = new Intent(this, LoginActivity.class);
+        startActivity(discoIntent);
+        MainActivity.this.finish();
+    }
     /**
      * A placeholder fragment containing a simple view.
      */

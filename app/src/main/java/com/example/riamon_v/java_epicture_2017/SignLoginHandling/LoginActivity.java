@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,6 +31,7 @@ public class LoginActivity extends AppCompatActivity {// implements LoaderCallba
     private EditText mUserName;
     private EditText mPasswordView;
     private Button loginButton;
+    private Button loginButtonImgur;
     private TextView signupLink;
 
     @Override
@@ -40,6 +42,7 @@ public class LoginActivity extends AppCompatActivity {// implements LoaderCallba
         mUserName = (EditText) findViewById(R.id.userName);
         mPasswordView = (EditText) findViewById(R.id.password);
         loginButton = (Button) findViewById(R.id.btn_login);
+        loginButtonImgur = (Button) findViewById(R.id.btn_login_imgur);
 
         if (isAlreadyConnected() != null) {
             onLoginSuccess();
@@ -49,6 +52,12 @@ public class LoginActivity extends AppCompatActivity {// implements LoaderCallba
             @Override
             public void onClick(View view) {
                login();
+            }
+        });
+        loginButtonImgur.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(LoginActivity.this, ImgurLoginActivity.class));
             }
         });
 
