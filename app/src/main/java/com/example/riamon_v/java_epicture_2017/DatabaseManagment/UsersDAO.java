@@ -25,6 +25,9 @@ public interface UsersDAO {
     @Query("SELECT * FROM users")
     List<User> getUsers();
 
+    @Query("SELECT * FROM users WHERE id = :id")
+    User getUserById(int id);
+
     @Query("SELECT * FROM users WHERE login = :login")
     User getUserByLogin(String login);
 

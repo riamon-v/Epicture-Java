@@ -76,11 +76,13 @@ public class ImgurLoginActivity extends AppCompatActivity {
                         findById(Integer.toString(getIntent().getIntExtra("idUser", 0)));*/
                 if (m.find()) {
                     User user = new User("", "loginImgur", "passImgur");
+                    user.setId(1);
                     user.setTokenImgur(m.group());
                     DatabaseHandler.getInstance(getApplicationContext()).getUserDao().insertUser(user);
+                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                    intent.putExtra("idUser", user.getId());
+                    startActivity(intent);
                 }
-                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                startActivity(intent);
                 finish();
                 return true; // Returning True means that application wants to leave the current WebView and handle the url itself, otherwise return false.
             }

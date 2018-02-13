@@ -54,6 +54,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String ARG_SECTION_NUMBER = "section_number";
     private SectionsPagerAdapter mSectionsPagerAdapter;
     private FloatingActionButton addButton;
+    public static User user;
 
     /**
      * The {@link ViewPager} that will host the section contents.
@@ -71,9 +72,6 @@ public class MainActivity extends AppCompatActivity {
         // primary sections of the activity.
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
-        // Set up the ViewPager with the sections adapter.
-        mViewPager = (ViewPager) findViewById(R.id.container);
-        mViewPager.setAdapter(mSectionsPagerAdapter);
         addButton = findViewById(R.id.add);
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -81,6 +79,12 @@ public class MainActivity extends AppCompatActivity {
                 mSectionsPagerAdapter.fragment.add(getString(mViewPager.getCurrentItem() == 0 ? R.string.title_imgur : R.string.title_flickr));
             }
         });
+        // Set up the ViewPager with the sections adapter.
+        mViewPager = (ViewPager) findViewById(R.id.container);
+        mViewPager.setAdapter(mSectionsPagerAdapter);
+
+        user = DatabaseHandler.getInstance(getApplicationContext()).getUserDao().getUserById(
+                                            getIntent().getIntExtra("idUser", 0));
     }
 
 
@@ -115,14 +119,16 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void disconnect() {
-        List<User> users = DatabaseHandler.getInstance(this).getUserDao().getUsers();
+       /* List<User> users = DatabaseHandler.getInstance(this).getUserDao().getUsers();
 
         for (Object user : users) {
             ((User) user).setConnect(false);
             ((User) user).setTokenFlickr(null);
             ((User) user).setTokenImgur(null);
             DatabaseHandler.getInstance(this).getUserDao().updateUser((User)user);
-        }
+        }*/
+        user.setUserDiconnect();
+        DatabaseHandler.getInstance(this).getUserDao().updateUser(user);
         Intent discoIntent = new Intent(this, LoginActivity.class);
         startActivity(discoIntent);
         MainActivity.this.finish();
@@ -193,6 +199,7 @@ public class MainActivity extends AppCompatActivity {
         public void add(String title) {
             Intent intent = new Intent(getActivity(), AddActivity.class);
             intent.putExtra("title", title);
+            intent.putExtra("idUser", user.getId());
 
             startActivity(intent);
         }

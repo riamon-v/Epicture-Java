@@ -26,6 +26,12 @@ public class User {
 
         }
 
+        public void setUserDiconnect() {
+                connect = false;
+                tokenFlickr = null;
+                tokenImgur = null;
+        }
+
         public int getId() {
                 return id;
         }

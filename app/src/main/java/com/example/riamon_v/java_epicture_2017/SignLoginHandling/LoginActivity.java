@@ -28,6 +28,7 @@ public class LoginActivity extends AppCompatActivity {// implements LoaderCallba
      */
     private static final int REQUEST_SIGNUP = 0;
 
+    private User user;
     private EditText mUserName;
     private EditText mPasswordView;
     private Button loginButton;
@@ -44,7 +45,7 @@ public class LoginActivity extends AppCompatActivity {// implements LoaderCallba
         loginButton = (Button) findViewById(R.id.btn_login);
         loginButtonImgur = (Button) findViewById(R.id.btn_login_imgur);
 
-        if (isAlreadyConnected() != null) {
+        if ((user = isAlreadyConnected()) != null) {
             onLoginSuccess();
         }
 
@@ -74,18 +75,18 @@ public class LoginActivity extends AppCompatActivity {// implements LoaderCallba
      }
 
     private User isAlreadyConnected() {
-        User user;
+        User nuser;
 
-        user = DatabaseHandler.getInstance(this).getUserDao().getConnectedUser(true);
-        if (user == null) {
-            user = DatabaseHandler.getInstance(this).getUserDao().getConnectedUserFlick();
-            if (user == null) {
-                user = DatabaseHandler.getInstance(this).getUserDao().getConnectedUserImgur();
-                if (user == null)
+        nuser = DatabaseHandler.getInstance(this).getUserDao().getConnectedUser(true);
+        if (nuser == null) {
+            nuser = DatabaseHandler.getInstance(this).getUserDao().getConnectedUserFlick();
+            if (nuser == null) {
+                nuser = DatabaseHandler.getInstance(this).getUserDao().getConnectedUserImgur();
+                if (nuser == null)
                     return null;
             }
         }
-        return user;
+        return nuser;
     }
 
     private void login() {
@@ -131,6 +132,10 @@ public class LoginActivity extends AppCompatActivity {// implements LoaderCallba
     private void onLoginSuccess() {
         loginButton.setEnabled(true);
         Intent mainIntent = new Intent(LoginActivity.this, MainActivity.class);
+        if (user == null) {
+            user = DatabaseHandler.getInstance(getApplicationContext()).getUserDao().getUserById(1);
+        }
+        mainIntent.putExtra("idUser", user.getId());
         startActivity(mainIntent);
         finish();
     }
@@ -142,7 +147,6 @@ public class LoginActivity extends AppCompatActivity {// implements LoaderCallba
 
     private boolean validate() {
         //boolean valid = true;
-        User user;
 
         String email = mUserName.getText().toString();
         String password = mPasswordView.getText().toString();
