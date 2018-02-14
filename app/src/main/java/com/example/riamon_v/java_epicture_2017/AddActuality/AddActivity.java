@@ -20,12 +20,14 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.riamon_v.java_epicture_2017.Api.Imgur.ImgurModel.AllObjects;
 import com.example.riamon_v.java_epicture_2017.DatabaseManagment.DatabaseHandler;
 import com.example.riamon_v.java_epicture_2017.DatabaseManagment.User;
-import com.example.riamon_v.java_epicture_2017.Api.Imgur.ImgurModel.ImageResponse;
 import com.example.riamon_v.java_epicture_2017.Api.Imgur.ImgurModel.UploadObject;
 import com.example.riamon_v.java_epicture_2017.Api.Imgur.Services.UploadService;
+import com.example.riamon_v.java_epicture_2017.MainActivity;
 import com.example.riamon_v.java_epicture_2017.R;
+import com.example.riamon_v.java_epicture_2017.SignLoginHandling.LoginActivity;
 
 import java.io.File;
 import java.io.IOException;
@@ -105,6 +107,15 @@ public class AddActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onBackPressed() {
+        Intent intent;
+
+        intent = new Intent(this, MainActivity.class);
+        intent.putExtra("idUser", user.getId());
+        startActivity(intent);
+    }
+
     public void chooseFile() {
         Intent getIntent = new Intent(Intent.ACTION_GET_CONTENT);
         getIntent.setType("image/*");
@@ -155,10 +166,10 @@ public class AddActivity extends AppCompatActivity {
         image.setImageResource(R.drawable.ic_image_black_24dp);
     }
 
-    private class UiCallback implements Callback<ImageResponse> {
+    private class UiCallback implements Callback<AllObjects.ImageResponse> {
 
         @Override
-        public void success(ImageResponse imageResponse, Response response) {
+        public void success(AllObjects.ImageResponse imageResponse, Response response) {
             clearInput();
             Snackbar.make(findViewById(R.id.uploadView), "Upload success", Snackbar.LENGTH_SHORT).show();
             //Log.d("SUCCESS", "true");

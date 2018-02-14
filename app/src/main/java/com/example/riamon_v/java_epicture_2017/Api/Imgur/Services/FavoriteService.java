@@ -7,8 +7,6 @@ import com.example.riamon_v.java_epicture_2017.Api.Imgur.ImgurModel.ImgurHandler
 import com.example.riamon_v.java_epicture_2017.Api.NetworkUtils;
 import com.example.riamon_v.java_epicture_2017.DatabaseManagment.User;
 
-import java.lang.ref.WeakReference;
-
 import retrofit.Callback;
 import retrofit.RestAdapter;
 
@@ -16,17 +14,17 @@ import retrofit.RestAdapter;
  * Created by riamon_v on 14/02/2018.
  */
 
-public class ImagesService extends Services {
+public class FavoriteService extends Services {
 
-    public ImagesService(Context ctx, User u) {
+    private String mId;
+
+    public FavoriteService(Context ctx, User u, String id) {
         super(ctx, u);
-        /* if (!sort.equals("oldest"))
-            this.mSort = "newest";
-        else this.mSort = sort;*/
+        this.mId = id;
     }
 
-    public void Execute(Callback<AllObjects.ListImageResponse> callback) {
-        final Callback<AllObjects.ListImageResponse> cb = callback;
+    public void Execute(Callback<AllObjects.AddFav> callback) {
+        final Callback<AllObjects.AddFav> cb = callback;
 
         if (!NetworkUtils.isConnected(mContext.get())) {
             cb.failure(null);
@@ -35,10 +33,11 @@ public class ImagesService extends Services {
 
         RestAdapter restAdapter = buildRestAdapter();
 
-        restAdapter.create(ImgurHandler.class).getImages(
+        restAdapter.create(ImgurHandler.class).postAddFavoriteImage(
+                mId,
                 "Bearer " + mUser.getTokenImgur(),
+                "",
                 cb
         );
     }
-
 }

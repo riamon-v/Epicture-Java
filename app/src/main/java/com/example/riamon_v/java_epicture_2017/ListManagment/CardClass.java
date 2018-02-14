@@ -10,7 +10,7 @@ public class CardClass {
     private String url;
     private String id;
     private String title;
-    private String fav;
+    public String fav;
     private int idResources = -1;
 
     public CardClass(String title, String url, String id, String fav) {
@@ -53,11 +53,4 @@ public class CardClass {
         this.id = id;
     }
 
-    public String getFav() {
-        return fav;
-    }
-
-    public void setFav(String fav) {
-        this.fav = fav;
-    }
 }

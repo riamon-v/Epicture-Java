@@ -1,10 +1,7 @@
 package com.example.riamon_v.java_epicture_2017;
 
-import android.content.Context;
 import android.content.Intent;
-import android.provider.Contacts;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.DividerItemDecoration;
@@ -25,8 +22,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.riamon_v.java_epicture_2017.AddActuality.AddActivity;
-import com.example.riamon_v.java_epicture_2017.Api.Imgur.ImgurModel.ImageResponse;
-import com.example.riamon_v.java_epicture_2017.Api.Imgur.ImgurModel.ListImageResponse;
+import com.example.riamon_v.java_epicture_2017.Api.Imgur.ImgurModel.AllObjects;
 import com.example.riamon_v.java_epicture_2017.Api.Imgur.Services.ImagesService;
 import com.example.riamon_v.java_epicture_2017.DatabaseManagment.DatabaseHandler;
 import com.example.riamon_v.java_epicture_2017.DatabaseManagment.User;
@@ -38,16 +34,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
 import retrofit.RetrofitError;
+import retrofit.client.Response;
 import retrofit.mime.TypedByteArray;
 
 public class MainActivity extends AppCompatActivity {
@@ -86,6 +77,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 mSectionsPagerAdapter.fragment.add(getString(mViewPager.getCurrentItem() == 0 ? R.string.title_imgur : R.string.title_flickr));
+                finish();
             }
         });
         // Set up the ViewPager with the sections adapter.
@@ -94,12 +86,6 @@ public class MainActivity extends AppCompatActivity {
 
         user = DatabaseHandler.getInstance(getApplicationContext()).getUserDao().getUserById(
                                             getIntent().getIntExtra("idUser", 0));
-    }
-
-
-    @Override
-    public void onResume() {
-        super.onResume();
     }
 
     @Override
@@ -149,6 +135,8 @@ public class MainActivity extends AppCompatActivity {
 
         private RecyclerView recyclerView;
         private AdapterCard adapter;
+        final List<CardClass> imgImgur = new ArrayList<>();
+        final List<CardClass> fakeFlickr = new ArrayList<>();
 
         /**
          * The fragment argument representing the section number for this
@@ -174,13 +162,9 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
-
-            final List<CardClass> imgImgur = new ArrayList<>();
-            final List<CardClass> fakeFlickr = new ArrayList<>();
-
             for (int i = 0; i < 10; i++) {
              //   fakeImgur.add(new CardClass("Et paf le chien", R.drawable.dog));
-                CardClass c = new CardClass("Le chat est moche","", "", "");
+                CardClass c = new CardClass("Le chat est moche","", "", "true");
                 c.setIdResources(R.drawable.cat);
                 fakeFlickr.add(c);
             }
@@ -191,9 +175,9 @@ public class MainActivity extends AppCompatActivity {
             recyclerView.setItemAnimator(new DefaultItemAnimator());
             recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL));
 
-            new ImagesService(getContext(), user).Execute(new retrofit.Callback<ListImageResponse>() {
+            new ImagesService(getContext(), user).Execute(new retrofit.Callback<AllObjects.ListImageResponse>() {
                 @Override
-                public void success(ListImageResponse imageResponse, retrofit.client.Response response) {
+                public void success(AllObjects.ListImageResponse imageResponse, Response response) {
                     try {
                         JSONObject obj = new JSONObject( new String(((TypedByteArray) response.getBody()).getBytes()));
                         JSONArray arr = obj.getJSONArray("data");
@@ -202,6 +186,7 @@ public class MainActivity extends AppCompatActivity {
                             JSONObject a = arr.getJSONObject(i);
                             CardClass picture = new CardClass(a.getString("title"), a.getString("link"),
                                     a.getString("id"), a.getString("favorite"));
+                            Log.d("NSM", a.getString("favorite"));
                             imgImgur.add(picture);
                         }
                         adapter = new AdapterCard((getArguments().getInt(ARG_SECTION_NUMBER) == 1 ? imgImgur : fakeFlickr), null, getContext());
