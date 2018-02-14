@@ -54,14 +54,8 @@ public interface ImgurHandler {
             Callback<AllObjects.AddFav> cb
     );
 
-    /**
-     * get all user's images favorite
-     * @param sort        sort by older or newer
-     * @param auth        #Type of authorization for upload
-     */
-    @GET("/3/account/me/favorites/{sort}")
+    @GET("/3/account/me/favorites")
     void getFavoriteImages(
-            @Path("sort") String sort,
             @Header("Authorization") String auth,
             Callback<AllObjects.ListImageResponse> cb
     );

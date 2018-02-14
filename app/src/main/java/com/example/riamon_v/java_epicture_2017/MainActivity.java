@@ -36,6 +36,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -137,6 +138,7 @@ public class MainActivity extends AppCompatActivity {
         private AdapterCard adapter;
         final List<CardClass> imgImgur = new ArrayList<>();
         final List<CardClass> fakeFlickr = new ArrayList<>();
+        List<CardClass> favImgImgur = new ArrayList<>();
 
         /**
          * The fragment argument representing the section number for this
@@ -186,7 +188,36 @@ public class MainActivity extends AppCompatActivity {
                             JSONObject a = arr.getJSONObject(i);
                             CardClass picture = new CardClass(a.getString("title"), a.getString("link"),
                                     a.getString("id"), a.getString("favorite"));
-                            Log.d("NSM", a.getString("favorite"));
+                            favImgImgur.add(picture);
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                @Override
+                public void failure(RetrofitError error) {
+                    //Assume we have no connection, since error is null
+                    if (error == null) {
+                    }
+                }
+            }, true);
+
+            new ImagesService(getContext(), user).Execute(new retrofit.Callback<AllObjects.ListImageResponse>() {
+                @Override
+                public void success(AllObjects.ListImageResponse imageResponse, Response response) {
+                    try {
+                        JSONObject obj = new JSONObject( new String(((TypedByteArray) response.getBody()).getBytes()));
+                        JSONArray arr = obj.getJSONArray("data");
+
+                        for (int i = 0; i < arr.length(); i++) {
+                            JSONObject a = arr.getJSONObject(i);
+                            CardClass picture = new CardClass(a.getString("title"), a.getString("link"),
+                                    a.getString("id"), a.getString("favorite"));
+                            for (int j = 0; j < favImgImgur.size(); j++) {
+                                if (Objects.equals(picture.getId(), favImgImgur.get(j).getId()))
+                                    picture.fav = "true";
+                            }
                             imgImgur.add(picture);
                         }
                         adapter = new AdapterCard((getArguments().getInt(ARG_SECTION_NUMBER) == 1 ? imgImgur : fakeFlickr), null, getContext());
@@ -202,7 +233,8 @@ public class MainActivity extends AppCompatActivity {
                     if (error == null) {
                     }
                 }
-            });
+            }, false);
+
             return rootView;
         }
 

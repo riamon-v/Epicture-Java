@@ -20,12 +20,9 @@ public class ImagesService extends Services {
 
     public ImagesService(Context ctx, User u) {
         super(ctx, u);
-        /* if (!sort.equals("oldest"))
-            this.mSort = "newest";
-        else this.mSort = sort;*/
     }
 
-    public void Execute(Callback<AllObjects.ListImageResponse> callback) {
+    public void Execute(Callback<AllObjects.ListImageResponse> callback, boolean fav) {
         final Callback<AllObjects.ListImageResponse> cb = callback;
 
         if (!NetworkUtils.isConnected(mContext.get())) {
@@ -35,10 +32,13 @@ public class ImagesService extends Services {
 
         RestAdapter restAdapter = buildRestAdapter();
 
-        restAdapter.create(ImgurHandler.class).getImages(
+        if (!fav)
+            restAdapter.create(ImgurHandler.class).getImages(
                 "Bearer " + mUser.getTokenImgur(),
-                cb
-        );
+                   cb);
+        else
+            restAdapter.create(ImgurHandler.class).getFavoriteImages(
+                    "Bearer " + mUser.getTokenImgur(),
+                    cb);
     }
-
 }
