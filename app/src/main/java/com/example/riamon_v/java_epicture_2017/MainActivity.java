@@ -1,7 +1,10 @@
 package com.example.riamon_v.java_epicture_2017;
 
+import android.content.Context;
 import android.content.Intent;
+import android.provider.Contacts;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.DividerItemDecoration;
@@ -22,6 +25,9 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.riamon_v.java_epicture_2017.AddActuality.AddActivity;
+import com.example.riamon_v.java_epicture_2017.Api.Imgur.ImgurModel.ImageResponse;
+import com.example.riamon_v.java_epicture_2017.Api.Imgur.ImgurModel.ListImageResponse;
+import com.example.riamon_v.java_epicture_2017.Api.Imgur.Services.ImagesService;
 import com.example.riamon_v.java_epicture_2017.DatabaseManagment.DatabaseHandler;
 import com.example.riamon_v.java_epicture_2017.DatabaseManagment.User;
 import com.example.riamon_v.java_epicture_2017.ListManagment.AdapterCard;
@@ -29,6 +35,7 @@ import com.example.riamon_v.java_epicture_2017.ListManagment.CardClass;
 import com.example.riamon_v.java_epicture_2017.SignLoginHandling.LoginActivity;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -40,6 +47,8 @@ import okhttp3.Callback;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import retrofit.RetrofitError;
+import retrofit.mime.TypedByteArray;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -166,12 +175,14 @@ public class MainActivity extends AppCompatActivity {
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
 
-            List<CardClass> fakeImgur = new ArrayList<>();
-            List<CardClass> fakeFlickr = new ArrayList<>();
+            final List<CardClass> imgImgur = new ArrayList<>();
+            final List<CardClass> fakeFlickr = new ArrayList<>();
 
             for (int i = 0; i < 10; i++) {
-                fakeImgur.add(new CardClass("Et paf le chien", R.drawable.dog));
-                fakeFlickr.add(new CardClass("Le chat est moche", R.drawable.cat));
+             //   fakeImgur.add(new CardClass("Et paf le chien", R.drawable.dog));
+                CardClass c = new CardClass("Le chat est moche","", "", "");
+                c.setIdResources(R.drawable.cat);
+                fakeFlickr.add(c);
             }
 
             View rootView = inflater.inflate(R.layout.fragment_main, container, false);
@@ -179,20 +190,34 @@ public class MainActivity extends AppCompatActivity {
             recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
             recyclerView.setItemAnimator(new DefaultItemAnimator());
             recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL));
-         //   TextView textView = (TextView) rootView.findViewById(R.id.section_label);
-           // textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));
 
-            adapter = new AdapterCard((getArguments().getInt(ARG_SECTION_NUMBER) == 1 ? fakeImgur : fakeFlickr), null);
-            recyclerView.setAdapter(adapter);
-
-          /*  FloatingActionButton fab = (FloatingActionButton) rootView.findViewById(R.id.fab);
-            fab.setOnClickListener(new View.OnClickListener() {
+            new ImagesService(getContext(), user).Execute(new retrofit.Callback<ListImageResponse>() {
                 @Override
-                public void onClick(View view) {
+                public void success(ListImageResponse imageResponse, retrofit.client.Response response) {
+                    try {
+                        JSONObject obj = new JSONObject( new String(((TypedByteArray) response.getBody()).getBytes()));
+                        JSONArray arr = obj.getJSONArray("data");
 
-                    add(getString(getArguments().getInt(ARG_SECTION_NUMBER) == 1 ? R.string.title_imgur : R.string.title_flickr));
+                        for (int i = 0; i < arr.length(); i++) {
+                            JSONObject a = arr.getJSONObject(i);
+                            CardClass picture = new CardClass(a.getString("title"), a.getString("link"),
+                                    a.getString("id"), a.getString("favorite"));
+                            imgImgur.add(picture);
+                        }
+                        adapter = new AdapterCard((getArguments().getInt(ARG_SECTION_NUMBER) == 1 ? imgImgur : fakeFlickr), null, getContext());
+                        recyclerView.setAdapter(adapter);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                 }
-            });*/
+
+                @Override
+                public void failure(RetrofitError error) {
+                    //Assume we have no connection, since error is null
+                    if (error == null) {
+                    }
+                }
+            });
             return rootView;
         }
 
@@ -203,7 +228,6 @@ public class MainActivity extends AppCompatActivity {
 
             startActivity(intent);
         }
-
     }
 
     /**

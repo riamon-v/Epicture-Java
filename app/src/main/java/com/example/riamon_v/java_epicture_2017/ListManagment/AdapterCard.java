@@ -1,10 +1,13 @@
 package com.example.riamon_v.java_epicture_2017.ListManagment;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import com.example.riamon_v.java_epicture_2017.R;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,10 +16,12 @@ public class AdapterCard extends RecyclerView.Adapter<CardHolder> {
 
     private List<CardClass> list = new ArrayList<>();
     private OnItemClickListener listener;
+    private Context ctx;
 
-    public AdapterCard(List<CardClass> list, OnItemClickListener listener) {
+    public AdapterCard(List<CardClass> list, OnItemClickListener listener, Context ctx) {
         this.list = list;
         this.listener = listener;
+        this.ctx = ctx;
     }
 
     public interface OnItemClickListener {
@@ -28,7 +33,7 @@ public class AdapterCard extends RecyclerView.Adapter<CardHolder> {
     @Override
     public CardHolder onCreateViewHolder(ViewGroup viewGroup, int itemType) {
         View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.card_view,viewGroup,false);
-        return new CardHolder(view);
+        return new CardHolder(view, ctx);
     }
 
     //c'est ici que nous allons remplir notre cellule avec le texte/image de chaque MyObjects

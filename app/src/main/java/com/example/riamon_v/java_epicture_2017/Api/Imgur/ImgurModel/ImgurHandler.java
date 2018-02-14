@@ -3,6 +3,7 @@ package com.example.riamon_v.java_epicture_2017.Api.Imgur.ImgurModel;
 
 import retrofit.Callback;
 import retrofit.http.Body;
+import retrofit.http.GET;
 import retrofit.http.Header;
 import retrofit.http.POST;
 import retrofit.http.Query;
@@ -31,4 +32,11 @@ public interface ImgurHandler {
             @Body TypedFile file,
             Callback<ImageResponse> cb
     );
+
+    @GET("/3/account/me/images")
+    void getImages(
+            @Header("Authorization") String auth,
+            Callback<ListImageResponse> cb
+    );
+
 }

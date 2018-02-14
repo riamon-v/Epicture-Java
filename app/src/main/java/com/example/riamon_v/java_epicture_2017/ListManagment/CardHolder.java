@@ -1,27 +1,34 @@
 package com.example.riamon_v.java_epicture_2017.ListManagment;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.riamon_v.java_epicture_2017.R;
+import com.squareup.picasso.Picasso;
 
 public class CardHolder extends RecyclerView.ViewHolder {
     private TextView titleView;
     private ImageView imageView;
+
+    Context context;
    // public RelativeLayout viewBackground;
     //public LinearLayout viewForeground;
    // private LinearLayout mLinearLayout;
    // private Button drop;
 
     //itemView est la vue correspondante à 1 cellule
-    public CardHolder(View itemView) {
+    public CardHolder(View itemView, Context ctx) {
         super(itemView);
         //c'est ici que l'on fait nos findView
 
         titleView = itemView.findViewById(R.id.titleCard);
         imageView = itemView.findViewById(R.id.imageCard);
+
+        context = ctx;
        // mLinearLayout = itemView.findViewById(R.id.expandable);
         //set visibility to GONE
        // mLinearLayout.setVisibility(View.GONE);
@@ -120,7 +127,12 @@ public class CardHolder extends RecyclerView.ViewHolder {
         });
 
         titleView.setText(item.getTitle());
-        imageView.setImageResource(item.getIdResources());
+        if (item.getIdResources() != -1)
+            imageView.setImageResource(item.getIdResources());
+        else {
+            Picasso.with(context).load(item.getUrl()).into(imageView);
+        }
+
       /*  textViewView.setText(item.getTitle());
         dateViewView.setText(new SimpleDateFormat("dd/MM/yyyy", Locale.FRANCE).format(item.getDate()));
         dateViewView.setText(dateViewView.getText() + " at " + item.getTime());
