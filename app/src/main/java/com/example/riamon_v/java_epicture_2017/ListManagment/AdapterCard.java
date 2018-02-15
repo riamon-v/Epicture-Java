@@ -66,15 +66,15 @@ public class AdapterCard extends RecyclerView.Adapter<CardHolder> {
                                 return true;
                             case R.id.action_delete:
                                 new DeleteImageService(ctx, MainActivity.user, item.getId()).
-                                        Execute(new Callback<AllObjects.ImageResponse>() {
+                                        Execute(new Callback<AllObjects.DelImg>() {
                                             @Override
-                                            public void success(AllObjects.ImageResponse imageResponse, Response response) {
-
+                                            public void success(AllObjects.DelImg imageResponse, Response response) {
+                                                removeItem(position);
                                             }
 
                                             @Override
                                             public void failure(RetrofitError error) {
-                                                removeItem(position);
+                                                Log.i("updatefail", error.toString());
                                             }
                                         });
                                  return true;

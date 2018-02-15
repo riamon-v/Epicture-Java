@@ -114,14 +114,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void disconnect() {
-       /* List<User> users = DatabaseHandler.getInstance(this).getUserDao().getUsers();
-
-        for (Object user : users) {
-            ((User) user).setConnect(false);
-            ((User) user).setTokenFlickr(null);
-            ((User) user).setTokenImgur(null);
-            DatabaseHandler.getInstance(this).getUserDao().updateUser((User)user);
-        }*/
         user.setUserDiconnect();
         DatabaseHandler.getInstance(this).getUserDao().updateUser(user);
         Intent discoIntent = new Intent(this, LoginActivity.class);
@@ -170,10 +162,16 @@ public class MainActivity extends AppCompatActivity {
             setHasOptionsMenu(true);
             View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
-            for (int i = 0; i < 10; i++) {
-                //   fakeImgur.add(new CardClass("Et paf le chien", R.drawable.dog));
-                CardClass c = new CardClass("Le chat est moche","", "", "true");
-                c.setIdResources(R.drawable.cat);
+            for (int i = 0; i < 6; i++) {
+                CardClass c;
+                if ((i % 2) == 0) {
+                    c = new CardClass("Morgan le Bg", "", "", "true");
+                    c.setIdResources(R.drawable.cat);
+                }
+                else {
+                    c = new CardClass("Sylvain le jeunot", "", "", "true");
+                    c.setIdResources(R.drawable.dog);
+                }
                 fakeFlickr.add(c);
             }
 
@@ -185,9 +183,8 @@ public class MainActivity extends AppCompatActivity {
             Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.toolbar);
             //for crate home button
 
-            imageServiceInstance(true);//, true);
-            SystemClock.sleep(200);
-            imageServiceInstance(false);//, true);
+            imageServiceInstance(true);
+            imageServiceInstance(false);
 
             return rootView;
         }
@@ -232,6 +229,8 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void success(AllObjects.ListImageResponse imageResponse, Response response) {
                     try {
+                        if (favCheck == false)
+                            SystemClock.sleep(200);
                         JSONObject obj = new JSONObject( new String(((TypedByteArray) response.getBody()).getBytes()));
                         JSONArray arr = obj.getJSONArray("data");
 

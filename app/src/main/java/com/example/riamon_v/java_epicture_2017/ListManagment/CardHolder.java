@@ -68,7 +68,7 @@ public class CardHolder extends RecyclerView.ViewHolder {
                 item.fav = Objects.equals(item.fav, "true") ? "false" : "true";
             }
         });
-        titleView.setText(item.getTitle());
+        titleView.setText(Objects.equals(item.getTitle(), "null") ? "" : item.getTitle());
         if (item.getIdResources() != -1)
             imageView.setImageResource(item.getIdResources());
         else {

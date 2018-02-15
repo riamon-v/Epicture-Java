@@ -20,8 +20,8 @@ public class DeleteImageService extends Services {
         super(ctx, u, id);
     }
 
-    public void Execute(Callback<AllObjects.ImageResponse> callback) {
-        final Callback<AllObjects.ImageResponse> cb = callback;
+    public void Execute(Callback<AllObjects.DelImg> callback) {
+        final Callback<AllObjects.DelImg> cb = callback;
 
         if (!NetworkUtils.isConnected(mContext.get())) {
             cb.failure(null);

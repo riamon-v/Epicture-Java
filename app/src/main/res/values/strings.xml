@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Epicture</string>
-    <string name="title_flickr">FLICKR</string>
-    <string name="title_imgur">IMGUR</string>
+    <string name="title_flickr">Add to FLICKR</string>
+    <string name="title_imgur">Add to IMGUR</string>
     <string name="title_activity_login">Sign in</string>
     <string name="title_activity_signup">Sign Up</string>
     <string name="title_activity_imgur">Sign with Imgur</string>

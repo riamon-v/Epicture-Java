@@ -65,7 +65,7 @@ public interface ImgurHandler {
     void deleteImage(
             @Path("imageHash") String imageHash,
             @Header("Authorization") String auth,
-            Callback<AllObjects.ImageResponse> cb
+            Callback<AllObjects.DelImg> cb
     );
 
     @POST("3/image/{imageHash")
