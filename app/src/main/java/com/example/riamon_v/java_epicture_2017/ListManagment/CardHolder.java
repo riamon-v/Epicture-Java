@@ -30,20 +30,22 @@ public class CardHolder extends RecyclerView.ViewHolder {
     private ImageView imageView;
     private ImageButton favButton;
     private ImageButton buttonMenu;
-    private AdapterCard adapterCard;
+    private PopupMenu popup;
     Context context;
 
 
-    public CardHolder(View itemView, Context ctx, AdapterCard a) {
+    public CardHolder(View itemView, Context ctx) {
         super(itemView);
         //c'est ici que l'on fait nos findView
 
+        context = ctx;
         titleView = itemView.findViewById(R.id.titleCard);
         imageView = itemView.findViewById(R.id.imageCard);
         favButton = itemView.findViewById(R.id.buttonFav);
         buttonMenu = itemView.findViewById(R.id.buttonMenu);
-        context = ctx;
-        adapterCard = a;
+        popup = new PopupMenu(context, buttonMenu);
+        MenuInflater inflater = popup.getMenuInflater();
+        inflater.inflate(R.menu.menu_card_view, popup.getMenu());
     }
 
     /**
@@ -66,44 +68,6 @@ public class CardHolder extends RecyclerView.ViewHolder {
                 item.fav = Objects.equals(item.fav, "true") ? "false" : "true";
             }
         });
-
-        final PopupMenu popup = new PopupMenu(context, buttonMenu);
-        MenuInflater inflater = popup.getMenuInflater();
-        inflater.inflate(R.menu.menu_card_view, popup.getMenu());
-
-        buttonMenu.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                    @Override
-                    public boolean onMenuItemClick (MenuItem menuItem){
-                        switch (menuItem.getItemId()) {
-                            case R.id.action_edit:
-                                Log.d("EDIT", "click");
-                                return true;
-                            case R.id.action_delete:
-                                new DeleteImageService(context, MainActivity.user, item.getId()).
-                                        Execute(new Callback<AllObjects.ImageResponse>() {
-                                            @Override
-                                            public void success(AllObjects.ImageResponse imageResponse, Response response) {
-                                                adapterCard.removeItem(getAdapterPosition());
-                                                Log.i("updateok", "ok");
-                                            }
-
-                                            @Override
-                                            public void failure(RetrofitError error) {
-                                                Log.i("updatefail", error.toString());
-                                            }
-                                        });
-                                return true;
-                        }
-                        return false;
-                    }
-                });
-                popup.show();
-            }
-        });
-
         titleView.setText(item.getTitle());
         if (item.getIdResources() != -1)
             imageView.setImageResource(item.getIdResources());
@@ -130,6 +94,14 @@ public class CardHolder extends RecyclerView.ViewHolder {
                     }
                 });
 
+    }
+
+    public ImageButton getButtonMenu() {
+        return buttonMenu;
+    }
+
+    public PopupMenu getPopup() {
+        return popup;
     }
 }
 
