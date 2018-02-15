@@ -17,10 +17,17 @@ public class Services {
 
     protected WeakReference<Context> mContext;
     protected User mUser;
+    protected String mId = null;
 
     public Services(Context ctx, User u) {
         mUser = u;
         mContext = new WeakReference<>(ctx);
+    }
+
+    public Services(Context ctx, User u, String id) {
+        mUser = u;
+        mContext = new WeakReference<>(ctx);
+        mId = id;
     }
 
     protected RestAdapter buildRestAdapter() {

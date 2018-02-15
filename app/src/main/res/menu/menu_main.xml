@@ -2,15 +2,21 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.example.riamon_v.java_epicture_2017.MainActivity">
-    <item
+   <!-- <item
         android:id="@+id/action_settings"
         android:orderInCategory="100"
         android:title="@string/action_settings"
-        app:showAsAction="never" />
+        app:showAsAction="never" />-->
 
     <item
         android:id="@+id/action_disconnect"
         android:orderInCategory="200"
         android:title="@string/action_disconnect"
         app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_favorite"
+        android:icon="@drawable/ic_favorite_border_black_24dp"
+        android:title="Favorite"
+        app:showAsAction="ifRoom"/>
 </menu>

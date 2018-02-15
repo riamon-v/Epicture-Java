@@ -16,9 +16,9 @@ import retrofit.RestAdapter;
  * Created by riamon_v on 14/02/2018.
  */
 
-public class ImagesService extends Services {
+public class GetImagesService extends Services {
 
-    public ImagesService(Context ctx, User u) {
+    public GetImagesService(Context ctx, User u) {
         super(ctx, u);
     }
 

@@ -21,6 +21,7 @@ public class CardClass {
         //this.idResources = idResources;
     }
 
+
     public int getIdResources() {
         return idResources;
     }

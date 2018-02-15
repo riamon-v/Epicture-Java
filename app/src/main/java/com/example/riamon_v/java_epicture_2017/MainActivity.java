@@ -1,6 +1,7 @@
 package com.example.riamon_v.java_epicture_2017;
 
 import android.content.Intent;
+import android.os.SystemClock;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -23,7 +24,7 @@ import android.view.ViewGroup;
 
 import com.example.riamon_v.java_epicture_2017.AddActuality.AddActivity;
 import com.example.riamon_v.java_epicture_2017.Api.Imgur.ImgurModel.AllObjects;
-import com.example.riamon_v.java_epicture_2017.Api.Imgur.Services.ImagesService;
+import com.example.riamon_v.java_epicture_2017.Api.Imgur.Services.GetImagesService;
 import com.example.riamon_v.java_epicture_2017.DatabaseManagment.DatabaseHandler;
 import com.example.riamon_v.java_epicture_2017.DatabaseManagment.User;
 import com.example.riamon_v.java_epicture_2017.ListManagment.AdapterCard;
@@ -35,7 +36,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 import retrofit.RetrofitError;
@@ -98,19 +101,15 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        switch (id) {
+            /*case R.id.action_settings:
+                break ;
+            */case R.id.action_disconnect:
+                disconnect();
+                break;
         }
-        else if (id == R.id.action_disconnect) {
-            disconnect();
-        }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -138,7 +137,10 @@ public class MainActivity extends AppCompatActivity {
         private AdapterCard adapter;
         final List<CardClass> imgImgur = new ArrayList<>();
         final List<CardClass> fakeFlickr = new ArrayList<>();
-        List<CardClass> favImgImgur = new ArrayList<>();
+        final List<CardClass> favImgImgur = new ArrayList<>();
+        Map<Integer, CardClass> tmpList = new HashMap<Integer, CardClass>();
+        List<CardClass> adapterList = new ArrayList<>();
+        private boolean isClickFav = false;
 
         /**
          * The fragment argument representing the section number for this
@@ -164,78 +166,119 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+            setHasOptionsMenu(true);
+            View rootView = inflater.inflate(R.layout.fragment_main, container, false);
+
             for (int i = 0; i < 10; i++) {
-             //   fakeImgur.add(new CardClass("Et paf le chien", R.drawable.dog));
+                //   fakeImgur.add(new CardClass("Et paf le chien", R.drawable.dog));
                 CardClass c = new CardClass("Le chat est moche","", "", "true");
                 c.setIdResources(R.drawable.cat);
                 fakeFlickr.add(c);
             }
 
-            View rootView = inflater.inflate(R.layout.fragment_main, container, false);
             recyclerView = rootView.findViewById(R.id.recyclerView);
             recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
             recyclerView.setItemAnimator(new DefaultItemAnimator());
             recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL));
 
-            new ImagesService(getContext(), user).Execute(new retrofit.Callback<AllObjects.ListImageResponse>() {
-                @Override
-                public void success(AllObjects.ListImageResponse imageResponse, Response response) {
-                    try {
-                        JSONObject obj = new JSONObject( new String(((TypedByteArray) response.getBody()).getBytes()));
-                        JSONArray arr = obj.getJSONArray("data");
+            Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.toolbar);
+            //for crate home button
 
-                        for (int i = 0; i < arr.length(); i++) {
-                            JSONObject a = arr.getJSONObject(i);
-                            CardClass picture = new CardClass(a.getString("title"), a.getString("link"),
-                                    a.getString("id"), a.getString("favorite"));
-                            favImgImgur.add(picture);
-                        }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-
-                @Override
-                public void failure(RetrofitError error) {
-                    //Assume we have no connection, since error is null
-                    if (error == null) {
-                    }
-                }
-            }, true);
-
-            new ImagesService(getContext(), user).Execute(new retrofit.Callback<AllObjects.ListImageResponse>() {
-                @Override
-                public void success(AllObjects.ListImageResponse imageResponse, Response response) {
-                    try {
-                        JSONObject obj = new JSONObject( new String(((TypedByteArray) response.getBody()).getBytes()));
-                        JSONArray arr = obj.getJSONArray("data");
-
-                        for (int i = 0; i < arr.length(); i++) {
-                            JSONObject a = arr.getJSONObject(i);
-                            CardClass picture = new CardClass(a.getString("title"), a.getString("link"),
-                                    a.getString("id"), a.getString("favorite"));
-                            for (int j = 0; j < favImgImgur.size(); j++) {
-                                if (Objects.equals(picture.getId(), favImgImgur.get(j).getId()))
-                                    picture.fav = "true";
-                            }
-                            imgImgur.add(picture);
-                        }
-                        adapter = new AdapterCard((getArguments().getInt(ARG_SECTION_NUMBER) == 1 ? imgImgur : fakeFlickr), null, getContext());
-                        recyclerView.setAdapter(adapter);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-
-                @Override
-                public void failure(RetrofitError error) {
-                    //Assume we have no connection, since error is null
-                    if (error == null) {
-                    }
-                }
-            }, false);
+            imageServiceInstance(true);//, true);
+            SystemClock.sleep(200);
+            imageServiceInstance(false);//, true);
 
             return rootView;
+        }
+
+        @Override
+        public boolean onOptionsItemSelected(MenuItem item) {
+            int id = item.getItemId();
+
+            switch (id) {
+                case R.id.action_favorite:
+                    item.setIcon(!isClickFav ? R.drawable.ic_favorite_black_24dp : R.drawable.ic_favorite_border_black_24dp);
+                    showFavorite();
+                    break;
+            }
+
+            return super.onOptionsItemSelected(item);
+        }
+
+        public void showFavorite() {
+            isClickFav = !isClickFav;
+            int i = adapter.getItemCount();
+
+            if (isClickFav) {
+                while (i > 0) {
+                    if (Objects.equals(adapterList.get(i - 1).fav, "false")) {
+                        tmpList.put(i - 1, adapterList.get(i - 1));
+                        adapter.removeItem(i - 1);
+                    }
+                    i--;
+                }
+            }
+            else {
+                for(Map.Entry<Integer, CardClass> entry : tmpList.entrySet()) {
+                    adapter.restoreItem(entry.getValue(), 0);
+                }
+                tmpList.clear();
+            }
+        }
+
+        public void imageServiceInstance(final boolean favCheck/*, final boolean assertModif*/) {
+            new GetImagesService(getContext(), user).Execute(new retrofit.Callback<AllObjects.ListImageResponse>() {
+                @Override
+                public void success(AllObjects.ListImageResponse imageResponse, Response response) {
+                    try {
+                        JSONObject obj = new JSONObject( new String(((TypedByteArray) response.getBody()).getBytes()));
+                        JSONArray arr = obj.getJSONArray("data");
+
+                        for (int i = 0; i < arr.length(); i++) {
+                            JSONObject a = arr.getJSONObject(i);
+                            CardClass picture = new CardClass(a.getString("title"), a.getString("link"),
+                                    a.getString("id"), a.getString("favorite"));
+                            if (!favCheck) {
+                                for (int j = 0; j < favImgImgur.size(); j++) {
+                                    if (Objects.equals(picture.getId(), favImgImgur.get(j).getId())) {
+                                      //  Log.d("EQUALS", picture.getId() + " -> " + favImgImgur.get(j).getId());
+                                        picture.fav = "true";
+                                    }
+                                }
+                                imgImgur.add(picture);
+                            }
+                            else
+                                favImgImgur.add(picture);
+                        }
+                        adapterList.clear();
+                       /* if (!assertModif) {
+                            adapterList.addAll(isClickFav ? favImgImgur : imgImgur);
+                            adapter.notifyDataSetChanged();
+                        }
+                        else {*/
+                            adapterList.addAll(getArguments().getInt(ARG_SECTION_NUMBER) == 1 ? imgImgur : fakeFlickr);
+                            adapter = new AdapterCard(adapterList, new AdapterCard.OnItemClickListener() {
+
+                                @Override
+                                public void onLongClick(CardClass item) {
+                                    Log.d("Long click on", item.getTitle());
+                                }
+                            }, getContext());
+                            recyclerView.setAdapter(adapter);
+                        //}
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                @Override
+                public void failure(RetrofitError error) {
+                    //Assume we have no connection, since error is null
+                    if (error == null) {
+                    }
+                }
+            }, favCheck);
         }
 
         public void add(String title) {
@@ -244,6 +287,10 @@ public class MainActivity extends AppCompatActivity {
             intent.putExtra("idUser", user.getId());
 
             startActivity(intent);
+        }
+
+        public RecyclerView getRecycler() {
+            return recyclerView;
         }
     }
 

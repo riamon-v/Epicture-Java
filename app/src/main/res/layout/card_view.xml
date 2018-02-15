@@ -50,7 +50,7 @@
 
             <TextView
                 android:id="@+id/titleCard"
-                android:layout_width="250dp"
+                android:layout_width="232dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:padding="10dp"
@@ -63,7 +63,15 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@null"
-                app:srcCompat="@drawable/ic_favorite_border_black_24dp" />
+                app:srcCompat="@drawable/ic_favorite_black_24dp" />
+
+            <ImageButton
+                android:id="@+id/buttonMenu"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@null"
+                app:srcCompat="@drawable/ic_more_vert_black_24dp" />
 
         </LinearLayout>
     </LinearLayout>

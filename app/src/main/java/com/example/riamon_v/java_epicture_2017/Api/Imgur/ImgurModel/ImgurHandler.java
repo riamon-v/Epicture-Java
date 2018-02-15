@@ -3,6 +3,7 @@ package com.example.riamon_v.java_epicture_2017.Api.Imgur.ImgurModel;
 
 import retrofit.Callback;
 import retrofit.http.Body;
+import retrofit.http.DELETE;
 import retrofit.http.GET;
 import retrofit.http.Header;
 import retrofit.http.POST;
@@ -60,4 +61,19 @@ public interface ImgurHandler {
             Callback<AllObjects.ListImageResponse> cb
     );
 
+    @DELETE("/3/image/{imageHash}")
+    void deleteImage(
+            @Path("imageHash") String imageHash,
+            @Header("Authorization") String auth,
+            Callback<AllObjects.ImageResponse> cb
+    );
+
+    @POST("3/image/{imageHash")
+    void editImage(
+            @Path("imageHash") String imageHash,
+            @Header("Authorization") String auth,
+            @Query("title") String title,
+            @Query("description") String description,
+            Callback<AllObjects.ImageResponse> cb
+    );
 }

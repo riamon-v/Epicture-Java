@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.example.riamon_v.java_epicture_2017.Api.Imgur.ImgurModel.AllObjects;
 import com.example.riamon_v.java_epicture_2017.Api.Imgur.ImgurModel.ImgurHandler;
+import com.example.riamon_v.java_epicture_2017.Api.Imgur.ImgurModel.UploadObject;
 import com.example.riamon_v.java_epicture_2017.Api.NetworkUtils;
 import com.example.riamon_v.java_epicture_2017.DatabaseManagment.User;
 
@@ -11,17 +12,17 @@ import retrofit.Callback;
 import retrofit.RestAdapter;
 
 /**
- * Created by riamon_v on 14/02/2018.
+ * Created by riamon_v on 15/02/2018.
  */
 
-public class FavoriteService extends Services {
+public class EditImageService extends Services {
 
-    public FavoriteService(Context ctx, User u, String id) {
+    public EditImageService(Context ctx, User u, String id) {
         super(ctx, u, id);
     }
 
-    public void Execute(Callback<AllObjects.AddFav> callback) {
-        final Callback<AllObjects.AddFav> cb = callback;
+    public void Execute(UploadObject upload, Callback<AllObjects.ImageResponse> callback) {
+        final Callback<AllObjects.ImageResponse> cb = callback;
 
         if (!NetworkUtils.isConnected(mContext.get())) {
             cb.failure(null);
@@ -29,12 +30,11 @@ public class FavoriteService extends Services {
         }
 
         RestAdapter restAdapter = buildRestAdapter();
-
-        restAdapter.create(ImgurHandler.class).postAddFavoriteImage(
-                mId,
+        restAdapter.create(ImgurHandler.class).editImage(
+                    mId,
                 "Bearer " + mUser.getTokenImgur(),
-                "",
-                cb
-        );
+                     upload.title,
+                     upload.description,
+                     cb);
     }
 }

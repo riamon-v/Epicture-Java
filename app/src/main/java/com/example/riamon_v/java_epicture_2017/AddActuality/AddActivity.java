@@ -27,6 +27,7 @@ import com.example.riamon_v.java_epicture_2017.Api.Imgur.ImgurModel.UploadObject
 import com.example.riamon_v.java_epicture_2017.Api.Imgur.Services.UploadService;
 import com.example.riamon_v.java_epicture_2017.MainActivity;
 import com.example.riamon_v.java_epicture_2017.R;
+import com.example.riamon_v.java_epicture_2017.SignLoginHandling.ImgurLoginActivity;
 import com.example.riamon_v.java_epicture_2017.SignLoginHandling.LoginActivity;
 
 import java.io.File;
@@ -55,8 +56,7 @@ public class AddActivity extends AppCompatActivity {
         user = DatabaseHandler.getInstance(getApplicationContext()).getUserDao().getUserById(
                 getIntent().getIntExtra("idUser", 0));
 
-        Log.d("User", user.getTokenImgur());
-
+        redirectImgur();
         title = findViewById(R.id.textView);
         title.setText(getIntent().getStringExtra("title"));
 
@@ -114,6 +114,17 @@ public class AddActivity extends AppCompatActivity {
         intent = new Intent(this, MainActivity.class);
         intent.putExtra("idUser", user.getId());
         startActivity(intent);
+    }
+
+    public void redirectImgur() {
+        if (user.getTokenImgur() == null) {
+            Intent intentImgur;
+
+            intentImgur = new Intent(this, ImgurLoginActivity.class);
+            intentImgur.putExtra("userId", user.getId());
+            startActivity(intentImgur);
+            finish();
+        }
     }
 
     public void chooseFile() {

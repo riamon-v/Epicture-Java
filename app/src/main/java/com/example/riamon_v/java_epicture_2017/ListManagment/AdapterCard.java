@@ -25,7 +25,7 @@ public class AdapterCard extends RecyclerView.Adapter<CardHolder> {
     }
 
     public interface OnItemClickListener {
-        void onItemClick(CardClass item);
+        void onLongClick(CardClass item);
     }
 
     //cette fonction permet de créer les viewHolder
@@ -33,7 +33,7 @@ public class AdapterCard extends RecyclerView.Adapter<CardHolder> {
     @Override
     public CardHolder onCreateViewHolder(ViewGroup viewGroup, int itemType) {
         View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.card_view,viewGroup,false);
-        return new CardHolder(view, ctx);
+        return new CardHolder(view, ctx, this);
     }
 
     //c'est ici que nous allons remplir notre cellule avec le texte/image de chaque MyObjects
@@ -48,10 +48,15 @@ public class AdapterCard extends RecyclerView.Adapter<CardHolder> {
         return list.size();
     }
 
+    public void setList(List<CardClass> list) {
+        this.list = list;
+    }
+
     /*
-     * remove task
-     * @param position
-     *
+             * remove task
+             * @param position
+             *
+             **/
     public void removeItem(int position) {
         list.remove(position);
         notifyItemRemoved(position);
@@ -62,9 +67,10 @@ public class AdapterCard extends RecyclerView.Adapter<CardHolder> {
      * @param item the task
      * @param position position in adapter
      *
+     **/
     public void restoreItem(CardClass item, int position) {
         list.add(position, item);
         notifyItemInserted(position);
-    }*/
+    }
 
 }
