@@ -21,8 +21,8 @@ public class EditImageService extends Services {
         super(ctx, u, id);
     }
 
-    public void Execute(UploadObject upload, Callback<AllObjects.ImageResponse> callback) {
-        final Callback<AllObjects.ImageResponse> cb = callback;
+    public void Execute(UploadObject upload, Callback<AllObjects.ManageImg> callback) {
+        final Callback<AllObjects.ManageImg> cb = callback;
 
         if (!NetworkUtils.isConnected(mContext.get())) {
             cb.failure(null);

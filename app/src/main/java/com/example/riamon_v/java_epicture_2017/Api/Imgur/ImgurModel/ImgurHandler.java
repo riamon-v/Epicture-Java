@@ -65,15 +65,15 @@ public interface ImgurHandler {
     void deleteImage(
             @Path("imageHash") String imageHash,
             @Header("Authorization") String auth,
-            Callback<AllObjects.DelImg> cb
+            Callback<AllObjects.ManageImg> cb
     );
 
-    @POST("3/image/{imageHash")
+    @POST("/3/image/{imageHash}")
     void editImage(
             @Path("imageHash") String imageHash,
             @Header("Authorization") String auth,
             @Query("title") String title,
             @Query("description") String description,
-            Callback<AllObjects.ImageResponse> cb
+            Callback<AllObjects.ManageImg> cb
     );
 }

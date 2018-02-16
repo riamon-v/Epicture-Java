@@ -2,6 +2,8 @@ package com.example.riamon_v.java_epicture_2017;
 
 import android.content.Intent;
 import android.os.SystemClock;
+import android.support.constraint.ConstraintLayout;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -58,6 +60,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String ARG_SECTION_NUMBER = "section_number";
     private SectionsPagerAdapter mSectionsPagerAdapter;
     private FloatingActionButton addButton;
+    public static CoordinatorLayout container;
     public static User user;
 
     /**
@@ -74,6 +77,7 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
+        container = findViewById(R.id.main_content);
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
         addButton = findViewById(R.id.add);
@@ -165,11 +169,11 @@ public class MainActivity extends AppCompatActivity {
             for (int i = 0; i < 6; i++) {
                 CardClass c;
                 if ((i % 2) == 0) {
-                    c = new CardClass("Morgan le Bg", "", "", "true");
+                    c = new CardClass("Morgan le Bg", "Vraiment un bg démesuré", "", "", "true");
                     c.setIdResources(R.drawable.cat);
                 }
                 else {
-                    c = new CardClass("Sylvain le jeunot", "", "", "true");
+                    c = new CardClass("Sylvain le jeunot", "Android Expert", "","", "true");
                     c.setIdResources(R.drawable.dog);
                 }
                 fakeFlickr.add(c);
@@ -184,6 +188,7 @@ public class MainActivity extends AppCompatActivity {
             //for crate home button
 
             imageServiceInstance(true);
+            SystemClock.sleep(300);
             imageServiceInstance(false);
 
             return rootView;
@@ -229,21 +234,17 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void success(AllObjects.ListImageResponse imageResponse, Response response) {
                     try {
-                        if (favCheck == false)
-                            SystemClock.sleep(200);
                         JSONObject obj = new JSONObject( new String(((TypedByteArray) response.getBody()).getBytes()));
                         JSONArray arr = obj.getJSONArray("data");
 
                         for (int i = 0; i < arr.length(); i++) {
                             JSONObject a = arr.getJSONObject(i);
-                            CardClass picture = new CardClass(a.getString("title"), a.getString("link"),
-                                    a.getString("id"), a.getString("favorite"));
+                            CardClass picture = new CardClass(a.getString("title"), a.getString("description"),
+                                    a.getString("link"), a.getString("id"), a.getString("favorite"));
                             if (!favCheck) {
                                 for (int j = 0; j < favImgImgur.size(); j++) {
-                                    if (Objects.equals(picture.getId(), favImgImgur.get(j).getId())) {
-                                      //  Log.d("EQUALS", picture.getId() + " -> " + favImgImgur.get(j).getId());
+                                    if (Objects.equals(picture.getId(), favImgImgur.get(j).getId()))
                                         picture.fav = "true";
-                                    }
                                 }
                                 imgImgur.add(picture);
                             }
@@ -251,21 +252,9 @@ public class MainActivity extends AppCompatActivity {
                                 favImgImgur.add(picture);
                         }
                         adapterList.clear();
-                       /* if (!assertModif) {
-                            adapterList.addAll(isClickFav ? favImgImgur : imgImgur);
-                            adapter.notifyDataSetChanged();
-                        }
-                        else {*/
-                            adapterList.addAll(getArguments().getInt(ARG_SECTION_NUMBER) == 1 ? imgImgur : fakeFlickr);
-                            adapter = new AdapterCard(adapterList, new AdapterCard.OnItemClickListener() {
-
-                                @Override
-                                public void onLongClick(CardClass item) {
-                                    Log.d("Long click on", item.getTitle());
-                                }
-                            }, getContext());
-                            recyclerView.setAdapter(adapter);
-                        //}
+                        adapterList.addAll(getArguments().getInt(ARG_SECTION_NUMBER) == 1 ? imgImgur : fakeFlickr);
+                        adapter = new AdapterCard(adapterList, null, getContext());
+                        recyclerView.setAdapter(adapter);
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }

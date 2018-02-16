@@ -11,7 +11,7 @@ public class AllObjects {
     public class AddFav extends ModelObject<String> {
     }
 
-    public class DelImg extends ModelObject<Boolean> {
+    public class ManageImg extends ModelObject<Boolean> {
 
     }
 

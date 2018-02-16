@@ -1,6 +1,12 @@
 package com.example.riamon_v.java_epicture_2017.ListManagment;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -11,12 +17,22 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.PopupMenu;
 
+import com.example.riamon_v.java_epicture_2017.AddActuality.AddActivity;
 import com.example.riamon_v.java_epicture_2017.Api.Imgur.ImgurModel.AllObjects;
+import com.example.riamon_v.java_epicture_2017.Api.Imgur.ImgurModel.UploadObject;
 import com.example.riamon_v.java_epicture_2017.Api.Imgur.Services.DeleteImageService;
+import com.example.riamon_v.java_epicture_2017.Api.Imgur.Services.UploadService;
 import com.example.riamon_v.java_epicture_2017.MainActivity;
 import com.example.riamon_v.java_epicture_2017.R;
-import com.squareup.picasso.Picasso;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,6 +45,7 @@ public class AdapterCard extends RecyclerView.Adapter<CardHolder> {
     private List<CardClass> list = new ArrayList<>();
     private OnItemClickListener listener;
     private Context ctx;
+    private URI uri;
 
     public AdapterCard(List<CardClass> list, OnItemClickListener listener, Context ctx) {
         this.list = list;
@@ -62,22 +79,12 @@ public class AdapterCard extends RecyclerView.Adapter<CardHolder> {
                     public boolean onMenuItemClick (MenuItem menuItem){
                         switch (menuItem.getItemId()) {
                             case R.id.action_edit:
-                                Log.d("EDIT", "click");
+                                editImage(item);
+                                //Log.d("EDIT", "click");
                                 return true;
                             case R.id.action_delete:
-                                new DeleteImageService(ctx, MainActivity.user, item.getId()).
-                                        Execute(new Callback<AllObjects.DelImg>() {
-                                            @Override
-                                            public void success(AllObjects.DelImg imageResponse, Response response) {
-                                                removeItem(position);
-                                            }
-
-                                            @Override
-                                            public void failure(RetrofitError error) {
-                                                Log.i("updatefail", error.toString());
-                                            }
-                                        });
-                                 return true;
+                                deleteImage(item, position);
+                                return true;
                         }
                         return false;
                     }
@@ -89,13 +96,44 @@ public class AdapterCard extends RecyclerView.Adapter<CardHolder> {
         cardHolder.bind(item, listener);
     }
 
+    private void editImage(CardClass item) {
+        Intent intentUpload = new Intent(ctx, AddActivity.class);
+
+        intentUpload.putExtra("item", item);
+        intentUpload.putExtra("idUser", MainActivity.user.getId());
+        ctx.startActivity(intentUpload);
+        ((Activity) ctx).finish();
+    }
+
+    private void deleteImage(CardClass item, final int position) {
+        new DeleteImageService(ctx, MainActivity.user, item.getId()).
+                Execute(new Callback<AllObjects.ManageImg>() {
+                    @Override
+                    public void success(AllObjects.ManageImg imageResponse, Response response) {
+                        final CardClass deletedItem = list.get(position);
+                        removeItem(position);
+                        Snackbar snackbar = Snackbar
+                                .make(MainActivity.container, deletedItem.getTitle() + ctx.getString(R.string.deletedMessage), Snackbar.LENGTH_LONG);
+                        snackbar.setAction(R.string.undo, new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                restorImgImgur(deletedItem, position);
+                            }
+                        });
+                        snackbar.setActionTextColor(Color.YELLOW);
+                        snackbar.show();
+                    }
+
+                    @Override
+                    public void failure(RetrofitError error) {
+                        Log.i("updatefail", error.toString());
+                    }
+                });
+    }
+
     @Override
     public int getItemCount() {
         return list.size();
-    }
-
-    public void setList(List<CardClass> list) {
-        this.list = list;
     }
 
     /*
@@ -119,4 +157,48 @@ public class AdapterCard extends RecyclerView.Adapter<CardHolder> {
         notifyItemInserted(position);
     }
 
+    private void restorImgImgur(CardClass deletedItem, int position) {
+        UploadObject upload = new UploadObject();
+
+        URL url;
+        Bitmap bmp = null;
+        try {
+            url = new URL(deletedItem.getUrl());
+            bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream());
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        bmp.compress(Bitmap.CompressFormat.PNG, 0, bos);
+        byte[] bitmapdata = bos.toByteArray();
+
+        upload.image = new File(ctx.getCacheDir(), "tmp");
+        FileOutputStream fos;
+        try {
+            fos = new FileOutputStream(upload.image);
+            fos.write(bitmapdata);
+            fos.flush();
+            fos.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        upload.title = deletedItem.getTitle();
+        upload.description = deletedItem.getContent();
+        new UploadService(ctx, MainActivity.user).
+                Execute(upload, new Callback<AllObjects.ImageResponse>() {
+                    @Override
+                    public void success(AllObjects.ImageResponse imageResponse, Response response) {
+                    }
+
+                    @Override
+                    public void failure(RetrofitError error) {
+                    }
+                });
+        restoreItem(deletedItem, position);
+    }
 }

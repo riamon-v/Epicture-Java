@@ -2,19 +2,24 @@ package com.example.riamon_v.java_epicture_2017.ListManagment;
 
 import android.util.Log;
 
+import java.io.File;
+import java.io.Serializable;
+
 /**
  * Created by riamon_v on 09/02/2018.
  */
 
-public class CardClass {
+public class CardClass implements Serializable {
     private String url;
     private String id;
     private String title;
+    private String content;
     public String fav;
     private int idResources = -1;
 
-    public CardClass(String title, String url, String id, String fav) {
+    public CardClass(String title, String content, String url, String id, String fav) {
         this.title = title;
+        this.content = content;
         this.url = url;
         this.id = id;
         this.fav = fav;
@@ -54,4 +59,11 @@ public class CardClass {
         this.id = id;
     }
 
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
 }
