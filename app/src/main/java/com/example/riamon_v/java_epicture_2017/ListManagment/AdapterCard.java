@@ -117,7 +117,7 @@ public class AdapterCard extends RecyclerView.Adapter<CardHolder> {
                         snackbar.setAction(R.string.undo, new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
-                                restorImgImgur(deletedItem, position);
+                                restorImgImgur(deletedItem);
                             }
                         });
                         snackbar.setActionTextColor(Color.YELLOW);
@@ -157,7 +157,7 @@ public class AdapterCard extends RecyclerView.Adapter<CardHolder> {
         notifyItemInserted(position);
     }
 
-    private void restorImgImgur(CardClass deletedItem, int position) {
+    private void restorImgImgur(CardClass deletedItem) {
         UploadObject upload = new UploadObject();
 
         URL url;
@@ -199,6 +199,6 @@ public class AdapterCard extends RecyclerView.Adapter<CardHolder> {
                     public void failure(RetrofitError error) {
                     }
                 });
-        restoreItem(deletedItem, position);
+        restoreItem(deletedItem, 0);
     }
 }

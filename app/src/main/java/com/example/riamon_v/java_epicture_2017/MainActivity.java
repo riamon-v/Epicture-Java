@@ -223,7 +223,7 @@ public class MainActivity extends AppCompatActivity {
             }
             else {
                 for(Map.Entry<Integer, CardClass> entry : tmpList.entrySet()) {
-                    adapter.restoreItem(entry.getValue(), 0);
+                    adapter.restoreItem(entry.getValue(), entry.getKey());
                 }
                 tmpList.clear();
             }
