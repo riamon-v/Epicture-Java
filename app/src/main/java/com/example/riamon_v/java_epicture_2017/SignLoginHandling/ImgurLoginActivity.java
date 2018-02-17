@@ -69,8 +69,6 @@ public class ImgurLoginActivity extends AppCompatActivity {
                 Pattern p = Pattern.compile("(?<=access_token=).*?(?=&|$)");
                 Matcher m = p.matcher(url);
 
-                Log.i("rttt", url);
-
                 finish();
                /* User user = DatabaseHandler.getInstance(getApplicationContext()).getUserDao().
                         findById(Integer.toString(getIntent().getIntExtra("idUser", 0)));*/

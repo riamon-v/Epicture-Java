@@ -5,11 +5,13 @@ import android.os.SystemClock;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 
 import android.support.v4.app.Fragment;
@@ -38,6 +40,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -62,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
     private FloatingActionButton addButton;
     public static CoordinatorLayout container;
     public static User user;
-
+    private static MenuItem searchItem;
     /**
      * The {@link ViewPager} that will host the section contents.
      */
@@ -100,6 +103,8 @@ public class MainActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
+
+        searchItem = menu.findItem(R.id.action_search);
         return true;
     }
 
@@ -137,7 +142,6 @@ public class MainActivity extends AppCompatActivity {
         Map<Integer, CardClass> tmpList = new HashMap<Integer, CardClass>();
         List<CardClass> adapterList = new ArrayList<>();
         private boolean isClickFav = false;
-
         /**
          * The fragment argument representing the section number for this
          * fragment.
@@ -200,10 +204,65 @@ public class MainActivity extends AppCompatActivity {
 
             switch (id) {
                 case R.id.action_favorite:
-                    item.setIcon(!isClickFav ? R.drawable.ic_favorite_black_24dp : R.drawable.ic_favorite_border_black_24dp);
+                    item.setIcon(!isClickFav ? R.drawable.ic_favorite_black_24dp : R.drawable.ic_favorite_border_white_24dp);
                     showFavorite();
                     break;
             }
+
+            final SearchView searchView =
+                    (SearchView) searchItem.getActionView();
+
+            searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+                @Override
+                public boolean onQueryTextChange(String newText) {
+                    return false;
+                }
+
+                @Override
+                public boolean onQueryTextSubmit(String query) {
+
+                    for (int j = 0; j < imgImgur.size(); j++) {
+                        if (imgImgur.get(j).getTitle().indexOf(query) == -1) {
+                            for (int i = adapterList.size(); i > 0; i--) {
+                                if (adapterList.get(i - 1).getId() == imgImgur.get(j).getId())
+                                    adapter.removeItem(i - 1);
+                            }
+                        } else if (!adapterList.contains(imgImgur.get(j))) {
+                            adapter.restoreItem(imgImgur.get(j), 0);
+                        }
+                    }
+                    return false;
+                }
+            });
+
+            searchItem.setOnActionExpandListener(new MenuItem.OnActionExpandListener() {
+                @Override
+                public boolean onMenuItemActionExpand(MenuItem menuItem) {
+                     return true;
+                }
+
+                @Override
+                public boolean onMenuItemActionCollapse(MenuItem menuItem) {
+                    adapterList.clear();
+                   /* for(Map.Entry<Integer, CardClass> entry : tmpList.entrySet()) {
+                        adapter.restoreItem(entry.getValue(), entry.getKey());
+                    }*/
+                    adapterList.addAll(imgImgur);
+                    adapter.notifyDataSetChanged();
+                    return true;
+                }
+            });
+            /*searchView.setOnCloseListener(new SearchView.OnCloseListener() {
+                @Override
+                public boolean onClose() {
+                    /*for(Map.Entry<Integer, CardClass> entry : tmpList.entrySet()) {
+                        adapter.restoreItem(entry.getValue(), entry.getKey());
+                    }
+                    tmpList.clear();
+                    Log.d("CLOSE", "close");
+                    return false;
+                }
+            });*/
 
             return super.onOptionsItemSelected(item);
         }
@@ -222,8 +281,11 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
             else {
-                for(Map.Entry<Integer, CardClass> entry : tmpList.entrySet()) {
-                    adapter.restoreItem(entry.getValue(), entry.getKey());
+                for (Map.Entry<Integer, CardClass> entry : tmpList.entrySet()) {
+                    if (adapterList.size() != 0)
+                        adapter.restoreItem(entry.getValue(), entry.getKey());
+                    else
+                        adapterList.add(entry.getValue());
                 }
                 tmpList.clear();
             }

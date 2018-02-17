@@ -35,6 +35,7 @@
     <string name="action_disconnect">Disconnect</string>
     <string name="action_edit">Edit</string>
     <string name="action_delete">Delete</string>
+    <string name="action_search">Search...</string>
     <string name="deletedMessage"> removed from Imgur</string>
     <string name="undo">UNDO</string>
 </resources>
