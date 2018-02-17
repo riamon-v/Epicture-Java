@@ -10,7 +10,6 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -96,6 +95,10 @@ public class AdapterCard extends RecyclerView.Adapter<CardHolder> {
         cardHolder.bind(item, listener);
     }
 
+    /**
+     * Create an activity to AddActivity to edit the item
+     * @param item item to edit
+     */
     private void editImage(CardClass item) {
         Intent intentUpload = new Intent(ctx, AddActivity.class);
 
@@ -105,6 +108,11 @@ public class AdapterCard extends RecyclerView.Adapter<CardHolder> {
         ((Activity) ctx).finish();
     }
 
+    /**
+     * Delete an image from Imgur with the delete service
+     * @param item item want to delete
+     * @param position position in adapter list
+     */
     private void deleteImage(CardClass item, final int position) {
         new DeleteImageService(ctx, MainActivity.user, item.getId()).
                 Execute(new Callback<AllObjects.ManageImg>() {
@@ -136,18 +144,18 @@ public class AdapterCard extends RecyclerView.Adapter<CardHolder> {
         return list.size();
     }
 
-    /*
-             * remove task
-             * @param position
-             *
-             **/
+    /**
+     * remove image
+     * @param position
+     *
+     **/
     public void removeItem(int position) {
         list.remove(position);
         notifyItemRemoved(position);
     }
 
     /**
-     * restor task when undo
+     * restore image when undo
      * @param item the task
      * @param position position in adapter
      *

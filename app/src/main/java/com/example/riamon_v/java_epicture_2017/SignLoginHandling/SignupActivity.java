@@ -49,6 +49,10 @@ public class SignupActivity extends AppCompatActivity {
             });
         }
 
+
+        /**
+         * Sign and login the user correctly
+         */
         public void signup() {
            // Log.d(TAG, "Signup");
 
@@ -99,6 +103,10 @@ public class SignupActivity extends AppCompatActivity {
             signupButton.setEnabled(true);
         }
 
+        /**
+         * Verify all the user's information before validation
+         * @return
+         */
         public boolean validate() {
             boolean valid = true;
 

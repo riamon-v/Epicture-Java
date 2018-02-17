@@ -1,9 +1,8 @@
 package com.example.riamon_v.java_epicture_2017.Api.Imgur.ImgurModel;
 
 /**
- * Created by riamon_v on 14/02/2018.
+ * ModelObject is a templated class for all the send objects
  */
-
 public class ModelObject<T> {
     protected T data;
     protected boolean success;

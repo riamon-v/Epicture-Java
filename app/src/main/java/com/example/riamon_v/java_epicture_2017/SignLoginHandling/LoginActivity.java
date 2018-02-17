@@ -74,6 +74,10 @@ public class LoginActivity extends AppCompatActivity {// implements LoaderCallba
         });
      }
 
+    /**
+     * Check wich user is connected
+     * @return user connected
+     */
     private User isAlreadyConnected() {
         User nuser;
 
@@ -89,6 +93,9 @@ public class LoginActivity extends AppCompatActivity {// implements LoaderCallba
         return nuser;
     }
 
+    /**
+     * Login the user correctly
+     */
     private void login() {
         if (!validate()) {
             onLoginFailed();
@@ -102,7 +109,6 @@ public class LoginActivity extends AppCompatActivity {// implements LoaderCallba
         progressDialog.setMessage("Authenticating...");
         progressDialog.show();
 
-        // TODO: Implement your own authentication logic here.
         new android.os.Handler().postDelayed(
                 new Runnable() {
                     public void run() {
@@ -123,9 +129,11 @@ public class LoginActivity extends AppCompatActivity {// implements LoaderCallba
         }
     }
 
+    /**
+     * Disable going back to the MainActivity
+     */
     @Override
     public void onBackPressed() {
-        // disable going back to the MainActivity
         moveTaskToBack(true);
     }
 
@@ -145,6 +153,10 @@ public class LoginActivity extends AppCompatActivity {// implements LoaderCallba
         loginButton.setEnabled(true);
     }
 
+    /**
+     * Verify all the user's information before validation
+     * @return
+     */
     private boolean validate() {
         //boolean valid = true;
 

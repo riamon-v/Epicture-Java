@@ -35,6 +35,11 @@ public interface ImgurHandler {
             Callback<AllObjects.ImageResponse> cb
     );
 
+    /**
+     * get all images
+     * @param auth  #Type of authorization for upload
+     * @param cb  Callback used for success/failures
+     */
     @GET("/3/account/me/images")
     void getImages(
             @Header("Authorization") String auth,
@@ -55,12 +60,23 @@ public interface ImgurHandler {
             Callback<AllObjects.AddFav> cb
     );
 
+    /**
+     * Request to get all the favorite pictures
+     * @param auth  #Type of authorization for upload
+     * @param cb  Callback used for success/failures
+     */
     @GET("/3/account/me/favorites")
     void getFavoriteImages(
             @Header("Authorization") String auth,
             Callback<AllObjects.ListImageResponse> cb
     );
 
+    /**
+     * Request to delete an image by this hash
+     * @param imageHash image ID
+     * @param auth  #Type of authorization for upload
+     * @param cb  Callback used for success/failures
+     */
     @DELETE("/3/image/{imageHash}")
     void deleteImage(
             @Path("imageHash") String imageHash,
@@ -68,6 +84,14 @@ public interface ImgurHandler {
             Callback<AllObjects.ManageImg> cb
     );
 
+    /**
+     * Request to ddit an image by this hash
+     * @param imageHash image ID
+     * @param auth #Type of authorization for upload
+     * @param title title of the image
+     * @param description description of the image
+     * @param cb Callback used for success/failures
+     */
     @POST("/3/image/{imageHash}")
     void editImage(
             @Path("imageHash") String imageHash,

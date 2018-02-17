@@ -1,11 +1,14 @@
 package com.example.riamon_v.java_epicture_2017;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.os.SystemClock;
-import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.view.MenuItemCompat;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.DividerItemDecoration;
@@ -13,13 +16,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
-
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.view.ViewPager;
-import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -40,7 +36,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -122,6 +117,9 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * Disconnect the user in connection
+     */
     private void disconnect() {
         user.setUserDiconnect();
         DatabaseHandler.getInstance(this).getUserDao().updateUser(user);
@@ -188,9 +186,6 @@ public class MainActivity extends AppCompatActivity {
             recyclerView.setItemAnimator(new DefaultItemAnimator());
             recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL));
 
-            Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.toolbar);
-            //for crate home button
-
             imageServiceInstance(true);
             SystemClock.sleep(300);
             imageServiceInstance(false);
@@ -221,6 +216,9 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public boolean onQueryTextSubmit(String query) {
 
+                    /**
+                     * Make the search option in toolbar
+                     */
                     for (int j = 0; j < imgImgur.size(); j++) {
                         if (imgImgur.get(j).getTitle().indexOf(query) == -1) {
                             for (int i = adapterList.size(); i > 0; i--) {
@@ -244,29 +242,17 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public boolean onMenuItemActionCollapse(MenuItem menuItem) {
                     adapterList.clear();
-                   /* for(Map.Entry<Integer, CardClass> entry : tmpList.entrySet()) {
-                        adapter.restoreItem(entry.getValue(), entry.getKey());
-                    }*/
                     adapterList.addAll(imgImgur);
                     adapter.notifyDataSetChanged();
                     return true;
                 }
             });
-            /*searchView.setOnCloseListener(new SearchView.OnCloseListener() {
-                @Override
-                public boolean onClose() {
-                    /*for(Map.Entry<Integer, CardClass> entry : tmpList.entrySet()) {
-                        adapter.restoreItem(entry.getValue(), entry.getKey());
-                    }
-                    tmpList.clear();
-                    Log.d("CLOSE", "close");
-                    return false;
-                }
-            });*/
-
             return super.onOptionsItemSelected(item);
         }
 
+        /**
+         * Show all the favorites in the application, or dismiss them
+         */
         public void showFavorite() {
             isClickFav = !isClickFav;
             int i = adapter.getItemCount();
@@ -291,7 +277,11 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        public void imageServiceInstance(final boolean favCheck/*, final boolean assertModif*/) {
+        /**
+         * Get all images we wants
+         * @param favCheck permit to know if we want to get favorites images or simple images
+         */
+        public void imageServiceInstance(final boolean favCheck) {
             new GetImagesService(getContext(), user).Execute(new retrofit.Callback<AllObjects.ListImageResponse>() {
                 @Override
                 public void success(AllObjects.ListImageResponse imageResponse, Response response) {
@@ -331,6 +321,10 @@ public class MainActivity extends AppCompatActivity {
             }, favCheck);
         }
 
+        /**
+         * Create an AddActivity to add an image
+         * @param title
+         */
         public void add(String title) {
             Intent intent = new Intent(getActivity(), AddActivity.class);
             intent.putExtra("title", title);

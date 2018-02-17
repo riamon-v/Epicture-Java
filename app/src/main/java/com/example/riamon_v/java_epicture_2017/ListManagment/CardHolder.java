@@ -36,7 +36,6 @@ public class CardHolder extends RecyclerView.ViewHolder {
 
     public CardHolder(View itemView, Context ctx) {
         super(itemView);
-        //c'est ici que l'on fait nos findView
 
         context = ctx;
         titleView = itemView.findViewById(R.id.titleCard);
@@ -76,6 +75,12 @@ public class CardHolder extends RecyclerView.ViewHolder {
         }
     }
 
+    /**
+     * Reverses the favorite state from an Image in Imgur
+     * @param u user
+     * @param id image id
+     * @param fav state Favorite
+     */
     private void reverseFav(User u, String id, final String fav) {
         new FavoriteService(context, u, id).
                 Execute(new Callback<AllObjects.AddFav>() {

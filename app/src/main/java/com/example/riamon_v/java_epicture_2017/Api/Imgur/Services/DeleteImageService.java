@@ -13,7 +13,6 @@ import retrofit.RestAdapter;
 /**
  * Created by riamon_v on 15/02/2018.
  */
-
 public class DeleteImageService extends Services {
 
     public DeleteImageService(Context ctx, User u, String id) {

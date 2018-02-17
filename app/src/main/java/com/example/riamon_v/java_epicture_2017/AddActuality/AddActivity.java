@@ -21,16 +21,15 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.riamon_v.java_epicture_2017.Api.Imgur.ImgurModel.AllObjects;
+import com.example.riamon_v.java_epicture_2017.Api.Imgur.ImgurModel.UploadObject;
 import com.example.riamon_v.java_epicture_2017.Api.Imgur.Services.EditImageService;
+import com.example.riamon_v.java_epicture_2017.Api.Imgur.Services.UploadService;
 import com.example.riamon_v.java_epicture_2017.DatabaseManagment.DatabaseHandler;
 import com.example.riamon_v.java_epicture_2017.DatabaseManagment.User;
-import com.example.riamon_v.java_epicture_2017.Api.Imgur.ImgurModel.UploadObject;
-import com.example.riamon_v.java_epicture_2017.Api.Imgur.Services.UploadService;
 import com.example.riamon_v.java_epicture_2017.ListManagment.CardClass;
 import com.example.riamon_v.java_epicture_2017.MainActivity;
 import com.example.riamon_v.java_epicture_2017.R;
 import com.example.riamon_v.java_epicture_2017.SignLoginHandling.ImgurLoginActivity;
-import com.example.riamon_v.java_epicture_2017.SignLoginHandling.LoginActivity;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
@@ -41,6 +40,9 @@ import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
+/**
+ * AddActivity class, permit to add or edit a file to the API, Imgur here
+ */
 public class AddActivity extends AppCompatActivity {
 
     public static final int PICK_IMAGE_REQUEST = 1;
@@ -111,6 +113,12 @@ public class AddActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * onActivityResult permit, here, to set the image in the view when the chooseFile activity ended
+     * @param requestCode received code
+     * @param resultCode
+     * @param data
+     */
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data)  {
         super.onActivityResult(requestCode, resultCode, data);
@@ -149,6 +157,9 @@ public class AddActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * choosFile perlit to launch an activity to choose the file
+     */
     public void chooseFile() {
         Intent getIntent = new Intent(Intent.ACTION_GET_CONTENT);
         getIntent.setType("image/*");
@@ -162,6 +173,9 @@ public class AddActivity extends AppCompatActivity {
         startActivityForResult(chooserIntent, PICK_IMAGE_REQUEST);
     }
 
+    /**
+     * checkPerm function allow the user to give us access to his medias
+     */
     public void checkPerm() {
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.READ_EXTERNAL_STORAGE)
@@ -172,6 +186,12 @@ public class AddActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     *  get path from a file in the phone
+     * @param context
+     * @param contentUri
+     * @return
+     */
     public String getRealPathFromURI(Context context, Uri contentUri) {
         Cursor cursor = null;
         try {

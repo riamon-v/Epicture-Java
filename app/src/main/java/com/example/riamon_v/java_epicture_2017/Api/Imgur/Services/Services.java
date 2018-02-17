@@ -10,9 +10,8 @@ import java.lang.ref.WeakReference;
 import retrofit.RestAdapter;
 
 /**
- * Created by riamon_v on 14/02/2018.
+ * Inheritance class for all the services
  */
-
 public class Services {
 
     protected WeakReference<Context> mContext;

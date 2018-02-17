@@ -3,9 +3,8 @@ package com.example.riamon_v.java_epicture_2017.Api.Imgur.ImgurModel;
 import java.util.List;
 
 /**
- * Created by riamon_v on 14/02/2018.
+ * AllObjects class regroup all the data send object which the JSON API send
  */
-
 public class AllObjects {
 
     public class AddFav extends ModelObject<String> {

@@ -6,9 +6,8 @@ import java.io.File;
 import java.io.Serializable;
 
 /**
- * Created by riamon_v on 09/02/2018.
+ * Card class display on recycler view
  */
-
 public class CardClass implements Serializable {
     private String url;
     private String id;
