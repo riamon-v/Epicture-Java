@@ -215,13 +215,24 @@ public class MainActivity extends AppCompatActivity {
             searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
                 @Override
                 public boolean onQueryTextChange(String newText) {
+
+                    for (int j = 0; j < imgImgur.size(); j++) {
+                        if (imgImgur.get(j).getTitle().indexOf(newText) == -1) {
+                            for (int i = adapterList.size(); i > 0; i--) {
+                                if (adapterList.get(i - 1).getId() == imgImgur.get(j).getId())
+                                    adapter.removeItem(i - 1);
+                            }
+                        } else if (!adapterList.contains(imgImgur.get(j))) {
+                            adapter.restoreItem(imgImgur.get(j), adapterList.size());
+                        }
+                    }
                     return false;
                 }
 
                 @Override
                 public boolean onQueryTextSubmit(String query) {
 
-                    for (int j = 0; j < imgImgur.size(); j++) {
+                    /*for (int j = 0; j < imgImgur.size(); j++) {
                         if (imgImgur.get(j).getTitle().indexOf(query) == -1) {
                             for (int i = adapterList.size(); i > 0; i--) {
                                 if (adapterList.get(i - 1).getId() == imgImgur.get(j).getId())
@@ -230,7 +241,7 @@ public class MainActivity extends AppCompatActivity {
                         } else if (!adapterList.contains(imgImgur.get(j))) {
                             adapter.restoreItem(imgImgur.get(j), 0);
                         }
-                    }
+                    }*/
                     return false;
                 }
             });
